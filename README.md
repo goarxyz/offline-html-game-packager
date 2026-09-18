@@ -17,9 +17,14 @@ cover images through GitHub Pages.
 
 ## Run the packaging workflow
 
-1. Open **Actions → Build game packages**.
-2. Choose **Run workflow**.
-3. Keep the source branch as `master` unless the upstream repository changes it.
+The connected API token cannot write workflow files because GitHub requires a
+separate `workflow` OAuth scope. Activate the already validated template once:
+
+1. Open [`workflow-template/build-games.yml`](workflow-template/build-games.yml).
+2. Choose **Edit this file**.
+3. Change its path to `.github/workflows/build-games.yml` and commit to `main`.
+4. Open **Actions → Build game packages** and choose **Run workflow**.
+5. Keep the source branch as `master` unless the upstream repository changes it.
 
 The build runs in 10 parallel shards. A successful run publishes:
 
