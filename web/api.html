@@ -33,7 +33,6 @@
 );
 const catalog = await response.json();
 
-console.log(catalog.gameCount); // 300
 console.log(catalog.games[0].packageUrl);</code></pre>
 
     <h2>Response</h2>
@@ -42,7 +41,6 @@ console.log(catalog.games[0].packageUrl);</code></pre>
       <tbody>
         <tr><td><code>generatedAt</code></td><td>ISO date</td><td>Time the catalog was assembled.</td></tr>
         <tr><td><code>releaseTag</code></td><td>string</td><td>GitHub Release containing the packages.</td></tr>
-        <tr><td><code>gameCount</code></td><td>number</td><td>Number of available games.</td></tr>
         <tr><td><code>games</code></td><td>array</td><td>Game metadata and asset locations.</td></tr>
       </tbody>
     </table>
