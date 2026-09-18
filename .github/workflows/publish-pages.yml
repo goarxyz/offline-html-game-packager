@@ -1,0 +1,52 @@
+name: Recover Pages publication
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Successful build run containing game-shard artifacts
+        required: true
+        type: string
+      release_tag:
+        description: Existing release tag containing the game ZIPs
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  publish-pages:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download successful build shards
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+          pattern: game-shard-*
+          path: build
+          merge-multiple: true
+      - name: Merge catalog and Pages files
+        run: node scripts/merge-catalog.mjs build site
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
