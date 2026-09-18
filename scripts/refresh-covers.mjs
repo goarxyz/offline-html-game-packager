@@ -4,8 +4,8 @@ import { join } from "node:path";
 import { chromium } from "playwright";
 import sharp from "sharp";
 
-const owner = process.env.SOURCE_OWNER || "CoolDude2349";
-const repository = process.env.SOURCE_REPO || "Offline-HTML-Games-Pack";
+const owner = process.env.SOURCE_OWNER;
+const repository = process.env.SOURCE_REPO;
 const branch = process.env.SOURCE_BRANCH || "master";
 const directory = process.env.SOURCE_DIRECTORY || "offline";
 const output = process.env.OUTPUT_DIRECTORY || "covers-refreshed";
@@ -13,6 +13,7 @@ const concurrency = Math.max(1, Number(process.env.CONCURRENCY || 6));
 const shard = Number(process.env.SHARD || 0);
 const shardTotal = Number(process.env.SHARD_TOTAL || 1);
 const limit = Number(process.env.LIMIT || 0);
+if (!owner || !repository) throw new Error("SOURCE_OWNER and SOURCE_REPO are required");
 
 await mkdir(output, { recursive: true });
 const entries = (await sourceEntries())
