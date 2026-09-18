@@ -97,14 +97,14 @@ h1 em { color: var(--orange); font-style: normal; text-shadow: 0 0 60px rgba(255
 h2 { margin: 0; font: 900 clamp(38px,5vw,70px)/1 var(--font-display); letter-spacing: -.06em; }
 h2 span { color: var(--orange); }
 .result-count { margin: 0 0 8px; color: var(--muted); font: 700 11px var(--font-display); letter-spacing: .12em; text-transform: uppercase; }
-.toolbar { position: sticky; top: 96px; z-index: 20; margin-bottom: 42px; padding: 9px; display: grid; grid-template-columns: 1fr auto auto; gap: 9px; border: 1px solid var(--line); border-radius: 15px; background: rgba(13,13,11,.86); backdrop-filter: blur(20px); }
+.toolbar { position: sticky; top: 96px; z-index: 20; margin-bottom: 42px; padding: 9px; display: grid; grid-template-columns: 1fr auto auto auto; gap: 9px; border: 1px solid var(--line); border-radius: 15px; background: rgba(13,13,11,.86); backdrop-filter: blur(20px); }
 .search { position: relative; }
 .search svg { position: absolute; width: 18px; left: 15px; top: 50%; transform: translateY(-50%); fill: none; stroke: #77756e; stroke-width: 2; }
 .search input, select, .filter-button { width: 100%; height: 48px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: #090908; outline: none; }
 .search input { padding: 0 16px 0 44px; }
 .search input::placeholder { color: #605f5a; }
 .search input:focus, select:focus, .filter-button:focus-visible { border-color: rgba(255,107,0,.65); box-shadow: 0 0 0 3px rgba(255,107,0,.1); }
-select { min-width: 170px; padding: 0 36px 0 14px; color: #aaa8a1; }
+select { min-width: 150px; padding: 0 36px 0 14px; color: #aaa8a1; }
 .filter-button { width: auto; padding: 0 16px; display: flex; align-items: center; gap: 8px; color: #aaa8a1; }
 .filter-button svg { width: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .filter-button[aria-pressed="true"] { border-color: var(--orange); background: var(--orange); color: #130b05; }
@@ -132,6 +132,7 @@ select { min-width: 170px; padding: 0 36px 0 14px; color: #aaa8a1; }
 .card-body h3 { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 700 15px var(--font-display); letter-spacing: -.03em; text-transform: uppercase; transition: color .2s; }
 .game-card:hover h3 { color: var(--orange); }
 .card-meta { display: flex; gap: 13px; margin-top: 7px; color: #72716b; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.card-meta .category { color: var(--orange); }
 .download-only { flex: 0 0 auto; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 9px; color: #77756e; background: var(--panel); }
 .download-only:hover { border-color: rgba(255,107,0,.4); color: var(--orange); }
 .download-only svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }
