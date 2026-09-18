@@ -1,0 +1,33 @@
+name: Migrate covers to main
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate-covers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download catalog and separate cover files
+        run: |
+          base="https://goarxyz.github.io/offline-html-game-packager"
+          curl --fail --location --retry 3 "$base/api/catalog.json" --output /tmp/catalog.json
+          test "$(jq '.games | length' /tmp/catalog.json)" -eq 300
+          mkdir -p covers
+          jq -r '.games[].cover' /tmp/catalog.json |
+            xargs -P 12 -I {} sh -c 'curl --fail --location --retry 3 "$1/{}" --output "covers/$(basename "{}")"' _ "$base"
+          test "$(find covers -type f -name '*.webp' | wc -l)" -eq 300
+      - name: Commit all artwork
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add covers
+          git commit -m "Add 300 separate game covers"
+          git push origin HEAD:main
+      - name: Verify cover count
+        run: test "$(git ls-tree -r --name-only HEAD covers | grep -c '\\.webp$')" -eq 300
