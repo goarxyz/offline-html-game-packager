@@ -15,6 +15,17 @@ The workflow captures artwork from the running game itself, stores package ZIPs
 as public GitHub Release assets, and deploys `catalog.json` plus lightweight
 cover images through GitHub Pages.
 
+## Published site and API
+
+- Game library: `https://goarxyz.github.io/offline-html-game-packager/`
+- JSON API: `https://goarxyz.github.io/offline-html-game-packager/api/catalog.json`
+- API documentation: `https://goarxyz.github.io/offline-html-game-packager/api.html`
+
+The static site lives in `web/` and is assembled with generated catalog data
+and covers during publication. Games are downloaded from the repository Release
+only when selected, cached through the browser Cache API, extracted in memory,
+and launched from a Blob URL.
+
 ## Run the packaging workflow
 
 The connected API token cannot write workflow files because GitHub requires a
@@ -57,3 +68,9 @@ The consuming website should:
 
 Do not gzip files inside the ZIP. ZIP compression already handles the package,
 and double compression makes browser loading slower without a useful size win.
+
+## Licensing
+
+Repository-authored code and documentation are available under the MIT License.
+The packaged games and captured artwork are excluded; see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
