@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c0d10">
+  <title>Catalog API — Offline Arcade</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .docs{max-width:900px;padding:80px 0 120px}.docs h1{font-size:clamp(46px,8vw,82px)}.docs h2{font-size:30px;margin:64px 0 16px}.docs h3{margin:32px 0 8px}.docs p,.docs li{color:var(--muted)}code,pre{font-family:"SFMono-Regular",Consolas,monospace}code{color:#ffc16a}pre{overflow:auto;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:#d9dce3;line-height:1.7}.endpoint{display:flex;align-items:center;gap:10px;padding:15px 18px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}.method{padding:4px 7px;border-radius:6px;background:#224b37;color:#7df0a9;font-size:11px;font-weight:900}.docs table{width:100%;border-collapse:collapse}.docs th,.docs td{text-align:left;padding:13px;border-bottom:1px solid var(--line);vertical-align:top}.docs th{color:var(--text)}.back{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">OA</span><span>Offline Arcade</span></a>
+    <nav><a href="./">Games</a><a href="./api.html">API</a><a href="https://github.com/goarxyz/offline-html-game-packager">GitHub</a></nav>
+  </header>
+  <main class="docs">
+    <p class="eyebrow">Public JSON API</p>
+    <h1>Build with the catalog.</h1>
+    <p>The catalog is a static, cache-friendly JSON endpoint. No key, account, or server-side SDK is required. The hosted library uses it to download, cache, unzip, and run each game on demand.</p>
+
+    <h2>Endpoint</h2>
+    <div class="endpoint"><span class="method">GET</span><code>https://goarxyz.github.io/offline-html-game-packager/api/catalog.json</code></div>
+
+    <h2>Quick start</h2>
+    <pre><code>const response = await fetch(
+  "https://goarxyz.github.io/offline-html-game-packager/api/catalog.json"
+);
+const catalog = await response.json();
+
+console.log(catalog.gameCount); // 300
+console.log(catalog.games[0].packageUrl);</code></pre>
+
+    <h2>Response</h2>
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>generatedAt</code></td><td>ISO date</td><td>Time the catalog was assembled.</td></tr>
+        <tr><td><code>releaseTag</code></td><td>string</td><td>GitHub Release containing the packages.</td></tr>
+        <tr><td><code>gameCount</code></td><td>number</td><td>Number of available games.</td></tr>
+        <tr><td><code>games</code></td><td>array</td><td>Game metadata and asset locations.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Game object</h2>
+    <pre><code>{
+  "id": "1-on-1-soccer",
+  "filename": "1-on-1-soccer.html",
+  "title": "1 On 1 Soccer",
+  "sourceUrl": "https://github.com/…",
+  "sourceSha": "…",
+  "sourceBytes": 7204081,
+  "cover": "covers/1-on-1-soccer.webp",
+  "packageFilename": "1-on-1-soccer.zip",
+  "packageBytes": 5181883,
+  "packageSha256": "…",
+  "packageUrl": "https://github.com/…/1-on-1-soccer.zip"
+}</code></pre>
+
+    <h2>Integrity and caching</h2>
+    <p>Use <code>packageSha256</code> to verify a downloaded ZIP before caching it. Clients can store packages in IndexedDB and only fetch a game after the user chooses it.</p>
+    <p><a class="back" href="./">← Return to the game library</a></p>
+  </main>
+</body>
+</html>
