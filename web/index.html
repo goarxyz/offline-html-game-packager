@@ -3,50 +3,74 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Browse and download 300 individually packaged offline HTML games.">
-  <meta name="theme-color" content="#0c0d10">
-  <title>Offline Arcade — 300 HTML Games</title>
+  <meta name="description" content="goarxyz — play 300 browser games instantly.">
+  <meta name="theme-color" content="#070706">
+  <title>goarxyz — 300 Browser Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23ff5a36'/%3E%3Cpath d='M18 38h28l-4-17H22z' fill='none' stroke='%230c0d10' stroke-width='5'/%3E%3Cpath d='M25 29v8m-4-4h8' stroke='%230c0d10' stroke-width='4'/%3E%3Ccircle cx='38' cy='31' r='2.5' fill='%230c0d10'/%3E%3Ccircle cx='42' cy='36' r='2.5' fill='%230c0d10'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23ff6b00'/%3E%3Cpath d='M18 38h28l-4-17H22z' fill='none' stroke='%23070706' stroke-width='5'/%3E%3Cpath d='M25 29v8m-4-4h8' stroke='%23070706' stroke-width='4'/%3E%3Ccircle cx='38' cy='31' r='2.5' fill='%23070706'/%3E%3Ccircle cx='42' cy='36' r='2.5' fill='%23070706'/%3E%3C/svg%3E">
   <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js" defer></script>
   <script src="./app.js" defer></script>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Offline Arcade home">
-      <span class="brand-mark" aria-hidden="true">OA</span>
-      <span>Offline Arcade</span>
+    <a class="brand" href="./" aria-label="goarxyz home">
+      <span class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M6.5 8.5h11l2 8.5a2 2 0 0 1-3.3 2l-2.2-2H10l-2.2 2a2 2 0 0 1-3.3-2z"/><path d="M8 11v4m-2-2h4m6-1h.01M18 14h.01"/></svg>
+      </span>
+      <span class="brand-word">goar<span>xyz</span></span>
     </a>
     <nav aria-label="Primary navigation">
-      <a href="#games">Games</a>
+      <a class="active" href="./">Home</a>
+      <a href="#games">Browse games</a>
       <a href="./api.html">API</a>
-      <a href="https://github.com/goarxyz/offline-html-game-packager">GitHub</a>
     </nav>
+    <a class="header-cta" href="https://github.com/goarxyz/offline-html-game-packager">GitHub <span>↗</span></a>
   </header>
 
   <main>
     <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Single-file games. Individually packaged.</p>
-        <h1>Your offline arcade,<br><span>ready on demand.</span></h1>
-        <p class="hero-text">Browse 300 HTML games with captured artwork. Download only the title you want—every ZIP is self-contained and keeps its original filename.</p>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="status-pill"><span></span> Browser arcade live</div>
+        <h1>PLAY WITHOUT<br><em>LIMITS.</em></h1>
+        <p>Three hundred browser classics. No account, no installer, no noise—just choose a game and jump straight in.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#games">Explore games</a>
-          <a class="button button-secondary" href="./api.html">Use the API</a>
+          <a class="button button-primary" href="#games">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg>
+            Start playing
+          </a>
+          <a class="button button-secondary" href="./api.html">Explore the API <span>→</span></a>
         </div>
       </div>
-      <div class="hero-stats" aria-label="Library statistics">
-        <div><strong id="hero-count">300</strong><span>games</span></div>
-        <div><strong>1 ZIP</strong><span>per title</span></div>
-        <div><strong>0</strong><span>accounts</span></div>
+      <div class="hero-console" aria-hidden="true">
+        <div class="console-ring ring-one"></div>
+        <div class="console-ring ring-two"></div>
+        <div class="console-core">
+          <svg viewBox="0 0 100 100"><path d="M24 38h52l9 35c2 8-8 13-14 7L61 70H39L29 80c-6 6-16 1-14-7z"/><path d="M34 47v15M27 54.5h14"/><circle cx="66" cy="50" r="3"/><circle cx="74" cy="59" r="3"/></svg>
+        </div>
+        <span class="console-chip chip-one">300 TITLES</span>
+        <span class="console-chip chip-two">INSTANT PLAY</span>
       </div>
+      <div class="scroll-cue"><span></span> Scroll to explore</div>
+    </section>
+
+    <section class="metrics" aria-label="Platform facts">
+      <div><strong id="hero-count">300</strong><span>Playable titles</span></div>
+      <div><strong>100%</strong><span>Browser based</span></div>
+      <div><strong>0</strong><span>Accounts needed</span></div>
+      <div><strong>1 ZIP</strong><span>Per game</span></div>
     </section>
 
     <section class="library" id="games">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">The collection</p>
-          <h2>Choose your next game</h2>
+          <p class="eyebrow">Game library</p>
+          <h2>FIND YOUR <span>NEXT GAME.</span></h2>
         </div>
         <p id="result-count" class="result-count" aria-live="polite">Loading catalog…</p>
       </div>
@@ -55,7 +79,7 @@
         <label class="search">
           <span class="sr-only">Search games</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
-          <input id="search" type="search" placeholder="Search all games" autocomplete="off">
+          <input id="search" type="search" placeholder="Search 300 games..." autocomplete="off">
         </label>
         <select id="sort" aria-label="Sort games">
           <option value="title-asc">Title A–Z</option>
@@ -63,7 +87,10 @@
           <option value="size-asc">Smallest first</option>
           <option value="size-desc">Largest first</option>
         </select>
-        <button class="filter-button" id="saved-filter" type="button" aria-pressed="false">Saved only</button>
+        <button class="filter-button" id="saved-filter" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 20-1.3-1.2C5.8 14.4 3 11.8 3 8.6A4.5 4.5 0 0 1 7.6 4 5 5 0 0 1 12 6.4 5 5 0 0 1 16.4 4 4.5 4.5 0 0 1 21 8.6c0 3.2-2.8 5.8-7.7 10.2z"/></svg>
+          Saved
+        </button>
       </div>
 
       <div id="game-grid" class="game-grid" aria-busy="true"></div>
@@ -71,19 +98,28 @@
         <h3>No games found</h3>
         <p>Try a shorter title or show the full collection.</p>
       </div>
-      <button id="show-more" class="button button-secondary show-more" type="button" hidden>Show more</button>
+      <button id="show-more" class="button button-secondary show-more" type="button" hidden>Load more games <span>↓</span></button>
     </section>
   </main>
 
   <footer>
     <div>
-      <a class="brand footer-brand" href="./"><span class="brand-mark" aria-hidden="true">OA</span><span>Offline Arcade</span></a>
-      <p>Packaging code is MIT licensed. Individual games and artwork remain the property of their respective rights holders.</p>
+      <a class="brand footer-brand" href="./">
+        <span class="brand-icon" aria-hidden="true">G</span>
+        <span class="brand-word">goar<span>xyz</span></span>
+      </a>
+      <p>Built for quick breaks and long nights. Packaging code is MIT licensed; games and artwork belong to their respective rights holders.</p>
     </div>
     <div class="footer-links">
+      <span>EXPLORE</span>
+      <a href="#games">All games</a>
       <a href="./api.html">API documentation</a>
+      <a href="https://github.com/goarxyz/offline-html-game-packager">Source code</a>
+    </div>
+    <div class="footer-links">
+      <span>LEGAL</span>
       <a href="https://github.com/goarxyz/offline-html-game-packager/blob/main/LICENSE">Code license</a>
-      <a href="https://github.com/goarxyz/offline-html-game-packager/blob/main/THIRD_PARTY_NOTICES.md">Game notices</a>
+      <a href="https://github.com/goarxyz/offline-html-game-packager/blob/main/THIRD_PARTY_NOTICES.md">Third-party notices</a>
     </div>
   </footer>
 
@@ -104,23 +140,24 @@
     <article class="game-card">
       <div class="cover-wrap">
         <img class="cover" alt="" loading="lazy" width="640" height="360">
-        <span class="format-badge">HTML</span>
+        <div class="cover-shade"></div>
+        <span class="format-badge">WEB GAME</span>
         <button class="save-button" type="button" aria-label="Save game" title="Save game">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 20-1.3-1.2C5.8 14.4 3 11.8 3 8.6A4.5 4.5 0 0 1 7.6 4 5 5 0 0 1 12 6.4 5 5 0 0 1 16.4 4 4.5 4.5 0 0 1 21 8.6c0 3.2-2.8 5.8-7.7 10.2z"></path></svg>
         </button>
+        <button class="play-link" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6z"></path></svg>
+          <span class="sr-only">Play now</span>
+        </button>
       </div>
       <div class="card-body">
-        <h3></h3>
-        <div class="card-meta"><span class="size"></span><span>Self-contained</span></div>
-        <div class="card-actions">
-          <button class="play-link" type="button">
-            <span>Play now</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6z"></path></svg>
-          </button>
-          <a class="download-only" href="#" title="Download ZIP" aria-label="Download ZIP">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"></path></svg>
-          </a>
+        <div>
+          <h3></h3>
+          <div class="card-meta"><span class="size"></span><span>Instant launch</span></div>
         </div>
+        <a class="download-only" href="#" title="Download ZIP" aria-label="Download ZIP">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"></path></svg>
+        </a>
       </div>
     </article>
   </template>
