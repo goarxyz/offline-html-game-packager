@@ -23,7 +23,8 @@ cover images through GitHub Pages.
 
 The static site lives in `web/` and is assembled with generated catalog data
 and covers during publication. Each title is fetched from `main/games/`, cached
-in the browser, unpacked in memory, and launched in a sandboxed iframe.
+in the browser, unpacked in memory, and launched at a temporary same-site URL
+through a service worker and sandboxed iframe.
 
 ## Run the packaging workflow
 
