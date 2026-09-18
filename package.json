@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "archiver": "7.0.1",
-    "playwright": "1.55.0"
+    "playwright": "1.55.0",
+    "sharp": "0.33.5"
   },
   "engines": {
     "node": ">=20"
