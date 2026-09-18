@@ -95,7 +95,6 @@ function render() {
     card.querySelector("h3").textContent = game.title;
     category.textContent = game.category || "Casual";
     card.querySelector(".format-badge").textContent = game.category || "Web game";
-    card.querySelector(".size").textContent = formatBytes(game.packageBytes);
     download.href = game.packageUrl;
     download.setAttribute("download", game.packageFilename);
     download.setAttribute("aria-label", `Download ${game.title} ZIP`);
