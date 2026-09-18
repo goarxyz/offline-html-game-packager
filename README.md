@@ -6,7 +6,7 @@ This repository builds browser-ready packages from the 300 single-file games in
 Each generated ZIP contains:
 
 ```text
-game.html
+<original-game-name>.html
 cover.webp
 metadata.json
 ```
@@ -51,7 +51,8 @@ The consuming website should:
 2. Display each entry's `cover`.
 3. Download `packageUrl` only when the user chooses that game.
 4. Store the ZIP in IndexedDB.
-5. Extract `game.html` with JSZip.
+5. Read `filename` from `metadata.json` and extract that original HTML filename
+   with JSZip.
 6. Load the HTML using a Blob URL in the game iframe.
 
 Do not gzip files inside the ZIP. ZIP compression already handles the package,
