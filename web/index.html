@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Browse and download 300 individually packaged offline HTML games.">
+  <meta name="theme-color" content="#0c0d10">
+  <title>Offline Arcade — 300 HTML Games</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23ff5a36'/%3E%3Cpath d='M18 38h28l-4-17H22z' fill='none' stroke='%230c0d10' stroke-width='5'/%3E%3Cpath d='M25 29v8m-4-4h8' stroke='%230c0d10' stroke-width='4'/%3E%3Ccircle cx='38' cy='31' r='2.5' fill='%230c0d10'/%3E%3Ccircle cx='42' cy='36' r='2.5' fill='%230c0d10'/%3E%3C/svg%3E">
+  <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Offline Arcade home">
+      <span class="brand-mark" aria-hidden="true">OA</span>
+      <span>Offline Arcade</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#games">Games</a>
+      <a href="./api.html">API</a>
+      <a href="https://github.com/goarxyz/offline-html-game-packager">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Single-file games. Individually packaged.</p>
+        <h1>Your offline arcade,<br><span>ready on demand.</span></h1>
+        <p class="hero-text">Browse 300 HTML games with captured artwork. Download only the title you want—every ZIP is self-contained and keeps its original filename.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#games">Explore games</a>
+          <a class="button button-secondary" href="./api.html">Use the API</a>
+        </div>
+      </div>
+      <div class="hero-stats" aria-label="Library statistics">
+        <div><strong id="hero-count">300</strong><span>games</span></div>
+        <div><strong>1 ZIP</strong><span>per title</span></div>
+        <div><strong>0</strong><span>accounts</span></div>
+      </div>
+    </section>
+
+    <section class="library" id="games">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">The collection</p>
+          <h2>Choose your next game</h2>
+        </div>
+        <p id="result-count" class="result-count" aria-live="polite">Loading catalog…</p>
+      </div>
+
+      <div class="toolbar">
+        <label class="search">
+          <span class="sr-only">Search games</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="search" type="search" placeholder="Search all games" autocomplete="off">
+        </label>
+        <select id="sort" aria-label="Sort games">
+          <option value="title-asc">Title A–Z</option>
+          <option value="title-desc">Title Z–A</option>
+          <option value="size-asc">Smallest first</option>
+          <option value="size-desc">Largest first</option>
+        </select>
+        <button class="filter-button" id="saved-filter" type="button" aria-pressed="false">Saved only</button>
+      </div>
+
+      <div id="game-grid" class="game-grid" aria-busy="true"></div>
+      <div id="empty" class="empty-state" hidden>
+        <h3>No games found</h3>
+        <p>Try a shorter title or show the full collection.</p>
+      </div>
+      <button id="show-more" class="button button-secondary show-more" type="button" hidden>Show more</button>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <a class="brand footer-brand" href="./"><span class="brand-mark" aria-hidden="true">OA</span><span>Offline Arcade</span></a>
+      <p>Packaging code is MIT licensed. Individual games and artwork remain the property of their respective rights holders.</p>
+    </div>
+    <div class="footer-links">
+      <a href="./api.html">API documentation</a>
+      <a href="https://github.com/goarxyz/offline-html-game-packager/blob/main/LICENSE">Code license</a>
+      <a href="https://github.com/goarxyz/offline-html-game-packager/blob/main/THIRD_PARTY_NOTICES.md">Game notices</a>
+    </div>
+  </footer>
+
+  <section class="player" id="player" aria-label="Game player" hidden>
+    <div class="player-bar">
+      <button id="close-player" class="player-control" type="button">← Library</button>
+      <strong id="player-title"></strong>
+      <a id="player-download" class="player-control" href="#">Download ZIP</a>
+    </div>
+    <div id="player-status" class="player-status" aria-live="polite">
+      <div class="loader" aria-hidden="true"></div>
+      <p>Preparing game…</p>
+    </div>
+    <iframe id="game-frame" title="Game" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-scripts" allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope" allowfullscreen></iframe>
+  </section>
+
+  <template id="game-card-template">
+    <article class="game-card">
+      <div class="cover-wrap">
+        <img class="cover" alt="" loading="lazy" width="640" height="360">
+        <span class="format-badge">HTML</span>
+        <button class="save-button" type="button" aria-label="Save game" title="Save game">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 20-1.3-1.2C5.8 14.4 3 11.8 3 8.6A4.5 4.5 0 0 1 7.6 4 5 5 0 0 1 12 6.4 5 5 0 0 1 16.4 4 4.5 4.5 0 0 1 21 8.6c0 3.2-2.8 5.8-7.7 10.2z"></path></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        <h3></h3>
+        <div class="card-meta"><span class="size"></span><span>Self-contained</span></div>
+        <div class="card-actions">
+          <button class="play-link" type="button">
+            <span>Play now</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6z"></path></svg>
+          </button>
+          <a class="download-only" href="#" title="Download ZIP" aria-label="Download ZIP">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"></path></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+  </template>
+</body>
+</html>
