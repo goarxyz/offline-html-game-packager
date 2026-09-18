@@ -177,7 +177,7 @@ async function openGame(game) {
     const metadata = JSON.parse(window.fflate.strFromU8(metadataFile));
     const html = files[metadata.filename];
     if (!html) throw new Error(`The package does not contain ${metadata.filename}.`);
-    const launchUrl = await publishGameDocument(game, metadata.filename, html);
+    const launchUrl = await publishGameBundle(game, metadata.filename, files);
     elements.frame.src = launchUrl;
     elements.frame.addEventListener("load", () => {
       elements.playerStatus.hidden = true;
