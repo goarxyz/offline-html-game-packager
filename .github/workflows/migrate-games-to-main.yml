@@ -55,5 +55,5 @@ jobs:
           done
       - name: Verify repository package count
         run: |
-          test "$(git ls-tree -r --name-only HEAD games | grep -c '\\.zip$')" -eq 300
+          test "$(git ls-tree -r --name-only HEAD games | grep -c '\.zip$')" -eq 300
           echo "All 300 game packages are committed under main/games."
