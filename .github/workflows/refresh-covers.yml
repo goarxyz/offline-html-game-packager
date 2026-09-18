@@ -1,0 +1,75 @@
+name: Refresh game artwork
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: Source game repository branch
+        required: true
+        default: master
+        type: string
+
+concurrency:
+  group: refresh-game-artwork
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    env:
+      SHARD: ${{ matrix.shard }}
+      SHARD_TOTAL: 10
+      SOURCE_BRANCH: ${{ inputs.source_branch }}
+      CONCURRENCY: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Capture real title and gameplay artwork
+        run: npm run refresh-covers
+      - name: Upload refreshed artwork
+        uses: actions/upload-artifact@v4
+        with:
+          name: refreshed-covers-${{ matrix.shard }}
+          path: covers-refreshed/*.webp
+          if-no-files-found: error
+          retention-days: 2
+
+  publish:
+    needs: capture
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: refreshed-covers-*
+          path: refreshed
+          merge-multiple: true
+      - name: Replace successful captures
+        run: |
+          count=$(find refreshed -type f -name '*.webp' | wc -l)
+          test "$count" -ge 250
+          find refreshed -type f -name '*.webp' -exec cp {} covers/ \;
+          echo "Refreshed $count game covers"
+      - name: Commit game artwork
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add covers
+          git diff --cached --quiet && exit 0
+          git commit -m "Replace loading screens with real game artwork"
+          git pull --rebase origin main
+          git push origin HEAD:main
