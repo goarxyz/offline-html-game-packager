@@ -100,9 +100,16 @@ jobs:
       - name: Merge catalog and Pages files
         run: node scripts/merge-catalog.mjs build site
       - name: Create release
-        run: gh release create "$RELEASE_TAG" --title "Game packages $RELEASE_TAG" --notes "Automated package build from workflow run $GITHUB_RUN_NUMBER." --latest
+        run: gh release view "$RELEASE_TAG" >/dev/null 2>&1 || gh release create "$RELEASE_TAG" --title "Game packages $RELEASE_TAG" --notes "Automated package build from workflow run $GITHUB_RUN_NUMBER." --latest
       - name: Upload game packages
-        run: find build/packages -type f -name '*.zip' -print0 | xargs -0 -n 20 gh release upload "$RELEASE_TAG" --clobber
+        run: |
+          expected=$(find build/packages -type f -name '*.zip' | wc -l)
+          actual=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')
+          if [ "$actual" -lt "$expected" ]; then
+            find build/packages -type f -name '*.zip' -print0 | xargs -0 -n 20 gh release upload "$RELEASE_TAG" --clobber
+          else
+            echo "Release already contains all $actual packages; skipping upload."
+          fi
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
