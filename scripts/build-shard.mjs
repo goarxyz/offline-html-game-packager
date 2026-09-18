@@ -7,8 +7,8 @@ import { chromium } from "playwright";
 import { createWriteStream } from "node:fs";
 import sharp from "sharp";
 
-const SOURCE_OWNER = process.env.SOURCE_OWNER || "CoolDude2349";
-const SOURCE_REPO = process.env.SOURCE_REPO || "Offline-HTML-Games-Pack";
+const SOURCE_OWNER = process.env.SOURCE_OWNER;
+const SOURCE_REPO = process.env.SOURCE_REPO;
 const SOURCE_BRANCH = process.env.SOURCE_BRANCH || "master";
 const SOURCE_DIRECTORY = process.env.SOURCE_DIRECTORY || "offline";
 const OUTPUT_DIRECTORY = process.env.OUTPUT_DIRECTORY || "build";
@@ -19,6 +19,7 @@ const limit = numberArgument("--limit", Number(process.env.LIMIT || 0));
 if (!Number.isInteger(shard) || !Number.isInteger(shardTotal) || shard < 0 || shardTotal < 1 || shard >= shardTotal) {
   throw new Error(`Invalid shard ${shard}/${shardTotal}`);
 }
+if (!SOURCE_OWNER || !SOURCE_REPO) throw new Error("SOURCE_OWNER and SOURCE_REPO are required");
 
 const packagesDirectory = join(OUTPUT_DIRECTORY, "packages");
 const coversDirectory = join(OUTPUT_DIRECTORY, "covers");
@@ -84,7 +85,6 @@ try {
       id: slug,
       filename,
       title: displayName(filename),
-      sourceUrl: entry.html_url,
       sourceSha: entry.sha,
       sourceBytes: entry.size,
       builtAt: new Date().toISOString()
