@@ -30,10 +30,22 @@ const catalog = {
   gameCount: entries.length,
   games: entries.map((entry) => ({
     ...Object.fromEntries(Object.entries(entry).filter(([key]) => key !== "source" + "Url")),
+    category: categoryFor(entry.filename),
     packageUrl: `${packageBase}/${encodeURIComponent(entry.packageFilename)}`,
     coverUrl: `https://raw.githubusercontent.com/${repository}/main/${entry.cover}`
   }))
 };
+
+function categoryFor(filename) {
+  const name = filename.toLocaleLowerCase();
+  if (/(soccer|tennis|basket|baseball|bowling|golf|football|skate|bike|racing|race|drift|moto|car|drive|run 3)/.test(name)) return "Sports & Racing";
+  if (/(chess|mahjong|sudoku|solitaire|puzzle|blox|bubble|match|2048|memory|word|brain|connect|flood|cut the rope)/.test(name)) return "Puzzle";
+  if (/(tower|defense|strategy|war|kingdom|battle|age of|civilization|army|siege|tactics)/.test(name)) return "Strategy";
+  if (/(adventure|fireboy|watergirl|zelda|mario|sonic|platform|quest|escape|temple|raft|jacksmith)/.test(name)) return "Adventure";
+  if (/(shoot|gun|zombie|strike|combat|fight|battle|ninja|sniper|action|alien|warrior)/.test(name)) return "Action";
+  if (/(flappy|angry birds|flipper|pinball|pac|snake|tetris|arcade|runner|doodle|fruit|geometry)/.test(name)) return "Arcade";
+  return "Casual";
+}
 
 await rm(siteDirectory, { recursive: true, force: true });
 await mkdir(siteDirectory, { recursive: true });
