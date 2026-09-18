@@ -16,9 +16,16 @@ const elements = {
   resultCount: document.querySelector("#result-count"),
   heroCount: document.querySelector("#hero-count"),
   empty: document.querySelector("#empty"),
-  showMore: document.querySelector("#show-more")
+  showMore: document.querySelector("#show-more"),
+  player: document.querySelector("#player"),
+  playerTitle: document.querySelector("#player-title"),
+  playerStatus: document.querySelector("#player-status"),
+  playerDownload: document.querySelector("#player-download"),
+  frame: document.querySelector("#game-frame"),
+  closePlayer: document.querySelector("#close-player")
 };
 
+let activeGameUrl = null;
 init();
 
 async function init() {
@@ -59,6 +66,10 @@ function bindEvents() {
     state.visible += 48;
     render();
   });
+  elements.closePlayer.addEventListener("click", closePlayer);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !elements.player.hidden) closePlayer();
+  });
 }
 
 function render() {
@@ -70,7 +81,8 @@ function render() {
     const card = elements.template.content.firstElementChild.cloneNode(true);
     const image = card.querySelector(".cover");
     const save = card.querySelector(".save-button");
-    const download = card.querySelector(".download-link");
+    const play = card.querySelector(".play-link");
+    const download = card.querySelector(".download-only");
     image.src = `./${game.cover}`;
     image.alt = `${game.title} game artwork`;
     card.querySelector("h3").textContent = game.title;
@@ -78,6 +90,8 @@ function render() {
     download.href = game.packageUrl;
     download.setAttribute("download", game.packageFilename);
     download.setAttribute("aria-label", `Download ${game.title} ZIP`);
+    play.setAttribute("aria-label", `Play ${game.title}`);
+    play.addEventListener("click", () => openGame(game));
     setSavedState(save, game);
     save.addEventListener("click", () => toggleSaved(save, game));
     fragment.append(card);
@@ -123,4 +137,70 @@ function setSavedState(button, game) {
 function formatBytes(bytes) {
   if (bytes < 1024 ** 2) return `${Math.round(bytes / 1024)} KB`;
   return `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+}
+
+async function openGame(game) {
+  elements.player.hidden = false;
+  document.body.classList.add("player-open");
+  elements.playerTitle.textContent = game.title;
+  elements.playerDownload.href = game.packageUrl;
+  elements.playerStatus.hidden = false;
+  elements.playerStatus.classList.remove("player-error");
+  elements.playerStatus.querySelector("p").textContent = "Downloading and preparing game…";
+  elements.frame.removeAttribute("src");
+
+  try {
+    if (!window.fflate) throw new Error("The ZIP reader could not load. Check your connection and try again.");
+    const bytes = await loadPackage(game);
+    const files = await unzipPackage(bytes);
+    const metadataFile = files["metadata.json"];
+    if (!metadataFile) throw new Error("Package metadata is missing.");
+    const metadata = JSON.parse(window.fflate.strFromU8(metadataFile));
+    const html = files[metadata.filename];
+    if (!html) throw new Error(`The package does not contain ${metadata.filename}.`);
+    if (activeGameUrl) URL.revokeObjectURL(activeGameUrl);
+    activeGameUrl = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+    elements.frame.src = activeGameUrl;
+    elements.frame.addEventListener("load", () => {
+      elements.playerStatus.hidden = true;
+    }, { once: true });
+  } catch (error) {
+    elements.playerStatus.classList.add("player-error");
+    elements.playerStatus.querySelector("p").textContent = error.message;
+  }
+}
+
+function unzipPackage(bytes) {
+  return new Promise((resolve, reject) => {
+    window.fflate.unzip(new Uint8Array(bytes), (error, files) => {
+      if (error) reject(error);
+      else resolve(files);
+    });
+  });
+}
+
+async function loadPackage(game) {
+  if (!("caches" in window)) {
+    const response = await fetch(game.packageUrl);
+    if (!response.ok) throw new Error(`Game download failed (${response.status}).`);
+    return response.arrayBuffer();
+  }
+  const cache = await caches.open("offline-arcade-packages-v2");
+  let response = await cache.match(game.packageUrl);
+  if (!response) {
+    response = await fetch(game.packageUrl);
+    if (!response.ok) throw new Error(`Game download failed (${response.status}).`);
+    await cache.put(game.packageUrl, response.clone());
+  }
+  return response.arrayBuffer();
+}
+
+function closePlayer() {
+  elements.player.hidden = true;
+  document.body.classList.remove("player-open");
+  elements.frame.removeAttribute("src");
+  if (activeGameUrl) {
+    URL.revokeObjectURL(activeGameUrl);
+    activeGameUrl = null;
+  }
 }
