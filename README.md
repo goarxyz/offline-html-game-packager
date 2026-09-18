@@ -22,9 +22,8 @@ cover images through GitHub Pages.
 - API documentation: `https://goarxyz.github.io/offline-html-game-packager/api.html`
 
 The static site lives in `web/` and is assembled with generated catalog data
-and covers during publication. Games are downloaded from the repository Release
-only when selected, cached through the browser Cache API, extracted in memory,
-and launched from a Blob URL.
+and covers during publication. Each title links to its permanent named ZIP in
+the repository Release.
 
 ## Run the packaging workflow
 
