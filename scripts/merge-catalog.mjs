@@ -35,17 +35,11 @@ const catalog = {
 
 await rm(siteDirectory, { recursive: true, force: true });
 await mkdir(siteDirectory, { recursive: true });
+await cp("web", siteDirectory, { recursive: true });
 await cp(join(buildDirectory, "covers"), join(siteDirectory, "covers"), { recursive: true });
 await writeFile(join(siteDirectory, "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`);
+await mkdir(join(siteDirectory, "api"), { recursive: true });
+await writeFile(join(siteDirectory, "api", "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`);
 await writeFile(join(siteDirectory, ".nojekyll"), "");
-await writeFile(join(siteDirectory, "index.html"), `<!doctype html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Offline HTML Game Packages</title>
-<style>body{font:16px system-ui;max-width:760px;margin:60px auto;padding:0 20px;background:#111;color:#eee}a{color:#e86a2a}</style>
-<h1>Offline HTML Game Packages</h1>
-<p>${entries.length} packaged games are available.</p>
-<p><a href="./catalog.json">Open catalog.json</a></p>
-`);
 
 console.log(`Merged ${entries.length} games from ${shardFiles.length} shards`);
