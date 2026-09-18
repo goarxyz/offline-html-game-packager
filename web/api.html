@@ -18,7 +18,7 @@
   <main class="docs">
     <p class="eyebrow">Public JSON API</p>
     <h1>Build with the catalog.</h1>
-    <p>The catalog is a static, cache-friendly JSON endpoint. No key, account, or server-side SDK is required. The hosted library uses it to fetch each package from the raw repository, cache it, unpack it, and run the original HTML in an iframe.</p>
+    <p>The catalog is a static, cache-friendly JSON endpoint. No key, account, or server-side SDK is required. The hosted library uses it to fetch each package from the raw repository, cache it, unpack it, and serve the original HTML to a sandboxed iframe through a local service worker.</p>
 
     <h2>Endpoint</h2>
     <div class="endpoint"><span class="method">GET</span><code>https://goarxyz.github.io/offline-html-game-packager/api/catalog.json</code></div>
