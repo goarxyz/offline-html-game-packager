@@ -1,5 +1,5 @@
 {
-  "name": "offline-html-game-packager",
+  "name": "goarxyz-browser-games",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node scripts/build-shard.mjs",
     "merge": "node scripts/merge-catalog.mjs",
-    "test": "node --check scripts/build-shard.mjs && node --check scripts/merge-catalog.mjs"
+    "refresh-covers": "node scripts/refresh-covers.mjs",
+    "test": "node --check scripts/build-shard.mjs && node --check scripts/merge-catalog.mjs && node --check scripts/refresh-covers.mjs"
   },
   "dependencies": {
     "archiver": "7.0.1",
