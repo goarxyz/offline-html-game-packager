@@ -130,7 +130,11 @@ async function fetchText(url) {
 
 async function sourceEntries() {
   const response = await fetch(`https://api.github.com/repos/${owner}/${repository}/contents/${directory}?ref=${branch}`, {
-    headers: { accept: "application/vnd.github+json", "user-agent": "goarxyz-cover-refresh" }
+    headers: {
+      accept: "application/vnd.github+json",
+      "user-agent": "goarxyz-cover-refresh",
+      ...(process.env.GITHUB_TOKEN ? { authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {})
+    }
   });
   if (!response.ok) throw new Error(`Source listing failed: ${response.status}`);
   return (await response.json())
