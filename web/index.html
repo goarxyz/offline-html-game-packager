@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="goarxyz — play 300 browser games instantly.">
   <meta name="theme-color" content="#070706">
-  <title>goarxyz — 300 Browser Games</title>
+  <title>goarxyz — Browser Games</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -53,17 +53,17 @@
         <div class="console-core">
           <svg viewBox="0 0 100 100"><path d="M24 38h52l9 35c2 8-8 13-14 7L61 70H39L29 80c-6 6-16 1-14-7z"/><path d="M34 47v15M27 54.5h14"/><circle cx="66" cy="50" r="3"/><circle cx="74" cy="59" r="3"/></svg>
         </div>
-        <span class="console-chip chip-one">300 TITLES</span>
+        <span class="console-chip chip-one">PLAY NOW</span>
         <span class="console-chip chip-two">INSTANT PLAY</span>
       </div>
       <div class="scroll-cue"><span></span> Scroll to explore</div>
     </section>
 
     <section class="metrics" aria-label="Platform facts">
-      <div><strong id="hero-count">300</strong><span>Playable titles</span></div>
       <div><strong>100%</strong><span>Browser based</span></div>
       <div><strong>0</strong><span>Accounts needed</span></div>
-      <div><strong>1 ZIP</strong><span>Per game</span></div>
+      <div><strong>1 CLICK</strong><span>To start playing</span></div>
+      <div><strong>FREE</strong><span>To explore</span></div>
     </section>
 
     <section class="library" id="games">
@@ -86,6 +86,9 @@
           <option value="title-desc">Title Z–A</option>
           <option value="size-asc">Smallest first</option>
           <option value="size-desc">Largest first</option>
+        </select>
+        <select id="category" aria-label="Filter by category">
+          <option value="all">All categories</option>
         </select>
         <button class="filter-button" id="saved-filter" type="button" aria-pressed="false">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 20-1.3-1.2C5.8 14.4 3 11.8 3 8.6A4.5 4.5 0 0 1 7.6 4 5 5 0 0 1 12 6.4 5 5 0 0 1 16.4 4 4.5 4.5 0 0 1 21 8.6c0 3.2-2.8 5.8-7.7 10.2z"/></svg>
@@ -153,7 +156,7 @@
       <div class="card-body">
         <div>
           <h3></h3>
-          <div class="card-meta"><span class="size"></span><span>Instant launch</span></div>
+          <div class="card-meta"><span class="category"></span><span>Instant launch</span></div>
         </div>
         <a class="download-only" href="#" title="Download ZIP" aria-label="Download ZIP">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"></path></svg>
