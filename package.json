@@ -1,0 +1,19 @@
+{
+  "name": "offline-html-game-packager",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Packages single-file HTML games with captured artwork for on-demand browser loading.",
+  "scripts": {
+    "build": "node scripts/build-shard.mjs",
+    "merge": "node scripts/merge-catalog.mjs",
+    "test": "node --check scripts/build-shard.mjs && node --check scripts/merge-catalog.mjs"
+  },
+  "dependencies": {
+    "archiver": "7.0.1",
+    "playwright": "1.55.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
