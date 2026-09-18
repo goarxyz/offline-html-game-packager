@@ -200,7 +200,7 @@ async function createGamePackage(outputPath, html, coverPath, metadata) {
     });
     archive.on("error", reject);
     archive.pipe(output);
-    archive.append(html, { name: "game.html" });
+    archive.append(html, { name: metadata.filename });
     archive.file(coverPath, { name: "cover.webp" });
     archive.append(`${JSON.stringify(metadata, null, 2)}\n`, { name: "metadata.json" });
     archive.finalize();
