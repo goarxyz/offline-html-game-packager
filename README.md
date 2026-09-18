@@ -1,7 +1,6 @@
 # goarxyz Browser Games
 
-This repository powers the goarxyz browser-game library using 300 single-file games from
-[`CoolDude2349/Offline-HTML-Games-Pack`](https://github.com/CoolDude2349/Offline-HTML-Games-Pack).
+This repository powers the goarxyz browser-game library using 300 single-file games.
 
 Each generated ZIP contains:
 
@@ -34,7 +33,7 @@ separate `workflow` OAuth scope. Activate the already validated template once:
 2. Choose **Edit this file**.
 3. Change its path to `.github/workflows/build-games.yml` and commit to `main`.
 4. Open **Actions → Build game packages** and choose **Run workflow**.
-5. Keep the source branch as `master` unless the upstream repository changes it.
+5. Supply the source owner, repository, branch, and directory when starting a build.
 
 The build runs in 10 parallel shards. A successful run publishes:
 
