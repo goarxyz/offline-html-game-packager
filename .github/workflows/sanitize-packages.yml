@@ -1,0 +1,32 @@
+name: Remove upstream identity from packages
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: sanitize-packages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sanitize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Remove source URL from every package metadata file
+        run: node scripts/sanitize-packages.mjs games
+      - name: Commit sanitized packages
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add games
+          git commit -m "Remove upstream URLs from package metadata"
+          git push origin HEAD:main
