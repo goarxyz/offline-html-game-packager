@@ -25,11 +25,11 @@ const elements = {
   closePlayer: document.querySelector("#close-player")
 };
 
-let activeGameUrl = null;
 init();
 
 async function init() {
   try {
+    await registerGameWorker();
     const response = await fetch("./api/catalog.json");
     if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
     const catalog = await response.json();
@@ -158,9 +158,8 @@ async function openGame(game) {
     const metadata = JSON.parse(window.fflate.strFromU8(metadataFile));
     const html = files[metadata.filename];
     if (!html) throw new Error(`The package does not contain ${metadata.filename}.`);
-    if (activeGameUrl) URL.revokeObjectURL(activeGameUrl);
-    activeGameUrl = URL.createObjectURL(new Blob([html], { type: "text/html" }));
-    elements.frame.src = activeGameUrl;
+    const launchUrl = await publishGameDocument(game, metadata.filename, html);
+    elements.frame.src = launchUrl;
     elements.frame.addEventListener("load", () => {
       elements.playerStatus.hidden = true;
     }, { once: true });
@@ -168,6 +167,27 @@ async function openGame(game) {
     elements.playerStatus.classList.add("player-error");
     elements.playerStatus.querySelector("p").textContent = error.message;
   }
+}
+
+async function registerGameWorker() {
+  if (!("serviceWorker" in navigator)) {
+    throw new Error("This browser does not support the game launcher.");
+  }
+  await navigator.serviceWorker.register("./sw.js", { scope: "./" });
+  await navigator.serviceWorker.ready;
+}
+
+async function publishGameDocument(game, filename, html) {
+  const path = `./play/${encodeURIComponent(game.id)}/${encodeURIComponent(filename)}`;
+  const url = new URL(path, window.location.href).href;
+  const cache = await caches.open("offline-arcade-documents-v1");
+  await cache.put(url, new Response(html, {
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store"
+    }
+  }));
+  return url;
 }
 
 function unzipPackage(bytes) {
@@ -199,8 +219,4 @@ function closePlayer() {
   elements.player.hidden = true;
   document.body.classList.remove("player-open");
   elements.frame.removeAttribute("src");
-  if (activeGameUrl) {
-    URL.revokeObjectURL(activeGameUrl);
-    activeGameUrl = null;
-  }
 }
