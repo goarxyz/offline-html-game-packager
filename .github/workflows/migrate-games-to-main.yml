@@ -1,0 +1,59 @@
+name: Migrate release games to main
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release containing the 300 game ZIPs
+        required: true
+        default: games-5
+        type: string
+
+concurrency:
+  group: migrate-games-to-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download all release packages
+        run: |
+          mkdir -p games
+          gh release download "${{ inputs.release_tag }}" --pattern '*.zip' --dir games
+          test "$(find games -type f -name '*.zip' | wc -l)" -eq 300
+      - name: Verify GitHub per-file limit
+        run: |
+          oversized=$(find games -type f -name '*.zip' -size +99M -print)
+          if [ -n "$oversized" ]; then
+            echo "$oversized"
+            echo "One or more files exceed GitHub's normal Git object limit."
+            exit 1
+          fi
+      - name: Commit packages in small pushes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mapfile -d '' files < <(find games -type f -name '*.zip' -print0 | sort -z)
+          batch_size=10
+          total=${#files[@]}
+          for ((start=0; start<total; start+=batch_size)); do
+            batch=("${files[@]:start:batch_size}")
+            git add -- "${batch[@]}"
+            end=$((start + ${#batch[@]}))
+            git commit -m "Add game packages $((start + 1))-$end of $total"
+            git push origin HEAD:main
+          done
+      - name: Verify repository package count
+        run: |
+          test "$(git ls-tree -r --name-only HEAD games | grep -c '\\.zip$')" -eq 300
+          echo "All 300 game packages are committed under main/games."
