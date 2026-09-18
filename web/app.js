@@ -83,7 +83,7 @@ function render() {
     const save = card.querySelector(".save-button");
     const play = card.querySelector(".play-link");
     const download = card.querySelector(".download-only");
-    image.src = `./${game.cover}`;
+    image.src = game.coverUrl || `./${game.cover}`;
     image.alt = `${game.title} game artwork`;
     card.querySelector("h3").textContent = game.title;
     card.querySelector(".size").textContent = formatBytes(game.packageBytes);
