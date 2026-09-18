@@ -1,10 +1,11 @@
 const state = {
   games: [],
   query: "",
+  category: "all",
   sort: "title-asc",
   savedOnly: false,
   visible: 48,
-  saved: new Set(JSON.parse(localStorage.getItem("offline-arcade-saved") || "[]"))
+  saved: new Set(JSON.parse(localStorage.getItem("goarxyz-saved") || "[]"))
 };
 
 const elements = {
@@ -12,9 +13,9 @@ const elements = {
   template: document.querySelector("#game-card-template"),
   search: document.querySelector("#search"),
   sort: document.querySelector("#sort"),
+  category: document.querySelector("#category"),
   savedFilter: document.querySelector("#saved-filter"),
   resultCount: document.querySelector("#result-count"),
-  heroCount: document.querySelector("#hero-count"),
   empty: document.querySelector("#empty"),
   showMore: document.querySelector("#show-more"),
   player: document.querySelector("#player"),
@@ -34,7 +35,7 @@ async function init() {
     if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
     const catalog = await response.json();
     state.games = catalog.games;
-    elements.heroCount.textContent = catalog.gameCount.toLocaleString();
+    populateCategories();
     bindEvents();
     render();
   } catch (error) {
@@ -54,6 +55,11 @@ function bindEvents() {
   });
   elements.sort.addEventListener("change", () => {
     state.sort = elements.sort.value;
+    render();
+  });
+  elements.category.addEventListener("change", () => {
+    state.category = elements.category.value;
+    state.visible = 48;
     render();
   });
   elements.savedFilter.addEventListener("click", () => {
@@ -83,9 +89,12 @@ function render() {
     const save = card.querySelector(".save-button");
     const play = card.querySelector(".play-link");
     const download = card.querySelector(".download-only");
+    const category = card.querySelector(".category");
     image.src = game.coverUrl || `./${game.cover}`;
     image.alt = `${game.title} game artwork`;
     card.querySelector("h3").textContent = game.title;
+    category.textContent = game.category || "Casual";
+    card.querySelector(".format-badge").textContent = game.category || "Web game";
     card.querySelector(".size").textContent = formatBytes(game.packageBytes);
     download.href = game.packageUrl;
     download.setAttribute("download", game.packageFilename);
@@ -99,7 +108,7 @@ function render() {
 
   elements.grid.replaceChildren(fragment);
   elements.grid.setAttribute("aria-busy", "false");
-  elements.resultCount.textContent = `${games.length.toLocaleString()} ${games.length === 1 ? "game" : "games"}`;
+  elements.resultCount.textContent = state.query || state.category !== "all" || state.savedOnly ? "Filtered titles" : "Browse all titles";
   elements.empty.hidden = games.length !== 0;
   elements.showMore.hidden = shown.length >= games.length;
 }
@@ -108,7 +117,8 @@ function filteredGames() {
   const games = state.games.filter((game) => {
     const matchesQuery = !state.query || `${game.title} ${game.filename}`.toLocaleLowerCase().includes(state.query);
     const matchesSaved = !state.savedOnly || state.saved.has(game.id);
-    return matchesQuery && matchesSaved;
+    const matchesCategory = state.category === "all" || game.category === state.category;
+    return matchesQuery && matchesSaved && matchesCategory;
   });
 
   return games.sort((a, b) => {
@@ -119,10 +129,20 @@ function filteredGames() {
   });
 }
 
+function populateCategories() {
+  const categories = [...new Set(state.games.map((game) => game.category || "Casual"))].sort();
+  for (const category of categories) {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    elements.category.append(option);
+  }
+}
+
 function toggleSaved(button, game) {
   if (state.saved.has(game.id)) state.saved.delete(game.id);
   else state.saved.add(game.id);
-  localStorage.setItem("offline-arcade-saved", JSON.stringify([...state.saved]));
+  localStorage.setItem("goarxyz-saved", JSON.stringify([...state.saved]));
   setSavedState(button, game);
   if (state.savedOnly) render();
 }
