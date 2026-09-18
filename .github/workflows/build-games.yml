@@ -1,0 +1,139 @@
+name: Build game packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: Source game repository branch
+        required: true
+        default: master
+        type: string
+      source_owner:
+        description: Source account or organization
+        required: true
+        type: string
+      source_repo:
+        description: Source repository name
+        required: true
+        type: string
+      source_directory:
+        description: Source directory containing the game files
+        required: true
+        default: offline
+        type: string
+      limit_per_shard:
+        description: Games per shard (0 builds every game)
+        required: true
+        default: "0"
+        type: string
+      publish:
+        description: Publish a release and deploy Pages
+        required: true
+        default: true
+        type: boolean
+
+concurrency:
+  group: game-package-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    env:
+      SHARD: ${{ matrix.shard }}
+      SHARD_TOTAL: 10
+      SOURCE_BRANCH: ${{ inputs.source_branch }}
+      SOURCE_OWNER: ${{ inputs.source_owner }}
+      SOURCE_REPO: ${{ inputs.source_repo }}
+      SOURCE_DIRECTORY: ${{ inputs.source_directory }}
+      LIMIT: ${{ inputs.limit_per_shard }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Restore packaged-game cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: game-packages-${{ inputs.source_branch }}-${{ github.run_id }}-${{ matrix.shard }}
+          restore-keys: |
+            game-packages-${{ inputs.source_branch }}-
+      - name: Build shard
+        run: npm run build -- --shard "$SHARD" --total "$SHARD_TOTAL" --limit "$LIMIT"
+      - name: Upload shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-shard-${{ matrix.shard }}
+          path: build/
+          retention-days: 3
+          compression-level: 0
+
+  publish:
+    needs: build
+    if: ${{ inputs.publish }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: games-${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download all shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: game-shard-*
+          path: build
+          merge-multiple: true
+      - name: Merge catalog and Pages files
+        run: node scripts/merge-catalog.mjs build site
+      - name: Create release
+        run: gh release view "$RELEASE_TAG" >/dev/null 2>&1 || gh release create "$RELEASE_TAG" --title "Game packages $RELEASE_TAG" --notes "Automated package build from workflow run $GITHUB_RUN_NUMBER." --latest
+      - name: Upload game packages
+        run: |
+          expected=$(find build/packages -type f -name '*.zip' | wc -l)
+          actual=$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')
+          if [ "$actual" -lt "$expected" ]; then
+            find build/packages -type f -name '*.zip' -print0 | xargs -0 -n 20 gh release upload "$RELEASE_TAG" --clobber
+          else
+            echo "Release already contains all $actual packages; skipping upload."
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
