@@ -1,6 +1,6 @@
 # goarxyz Browser Games
 
-This repository powers the goarxyz browser-game library using 300 single-file games.
+This repository powers the goarxyz browser-game library using a collection of single-file games.
 
 Each generated ZIP contains:
 
@@ -48,7 +48,7 @@ The Playwright container used by Actions already includes Chromium:
 ```bash
 npm install
 npm test
-npm run build -- --shard 0 --total 300 --limit 1
+npm run build -- --shard 0 --total 10 --limit 1
 RELEASE_TAG=local-test node scripts/merge-catalog.mjs build site
 ```
 
