@@ -1,0 +1,16 @@
+[
+  {
+    "id": "trapped-with-jester",
+    "filename": "trapped-with-jester.html",
+    "title": "Trapped with Jester",
+    "sourceSha": "2096c6ebef6f1ecddb3f5dc62730778172c4645c060df486895a9d7e677b6700",
+    "sourceBytes": 31924243,
+    "builtAt": "2026-09-18T18:04:49Z",
+    "bundle": true,
+    "format": "renpy-web-bundle",
+    "cover": "covers/trapped-with-jester.webp",
+    "packageFilename": "trapped-with-jester.zip",
+    "packageBytes": 35009144,
+    "packageSha256": "0a4ffe50dd9745b9e41055d3004274280738893c6d82fea3cc4c466ef73c6ac8"
+  }
+]
