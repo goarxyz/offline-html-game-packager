@@ -16,11 +16,11 @@ jobs:
       - name: Download catalog and separate cover files
         run: |
           base="https://goarxyz.github.io/offline-html-game-packager"
-          curl --fail --location --retry 3 "$base/api/catalog.json" --output /tmp/catalog.json
+          curl --fail --location --retry 8 --retry-all-errors "$base/api/catalog.json" --output /tmp/catalog.json
           test "$(jq '.games | length' /tmp/catalog.json)" -eq 300
           mkdir -p covers
           jq -r '.games[].cover' /tmp/catalog.json |
-            xargs -P 12 -I {} sh -c 'curl --fail --location --retry 3 "$1/{}" --output "covers/$(basename "{}")"' _ "$base"
+            xargs -P 4 -I {} sh -c 'curl --silent --show-error --fail --location --retry 8 --retry-all-errors "$1/{}" --output "covers/$(basename "{}")"' _ "$base"
           test "$(find covers -type f -name '*.webp' | wc -l)" -eq 300
       - name: Commit all artwork
         run: |
