@@ -5,6 +5,7 @@ import { basename, join } from "node:path";
 import archiver from "archiver";
 import { chromium } from "playwright";
 import { createWriteStream } from "node:fs";
+import sharp from "sharp";
 
 const SOURCE_OWNER = process.env.SOURCE_OWNER || "CoolDude2349";
 const SOURCE_REPO = process.env.SOURCE_REPO || "Offline-HTML-Games-Pack";
@@ -150,13 +151,15 @@ async function captureCover(context, url, outputPath, title) {
       console.warn(`Navigation warning for ${title}: ${error.message}`);
     });
     await page.waitForTimeout(3500);
-    await page.screenshot({
-      path: outputPath,
-      type: "webp",
-      quality: 78,
+    const screenshot = await page.screenshot({
+      type: "png",
       animations: "disabled",
       timeout: 20000
     });
+    await sharp(screenshot)
+      .resize(640, 360, { fit: "cover" })
+      .webp({ quality: 78 })
+      .toFile(outputPath);
   } catch (error) {
     console.warn(`Screenshot failed for ${title}; creating fallback artwork: ${error.message}`);
     await createFallbackCover(context, outputPath, title);
@@ -175,7 +178,11 @@ async function createFallbackCover(context, outputPath, title) {
         h1{font-size:56px;text-align:center;max-width:90%;letter-spacing:-.03em}
       </style><main><h1></h1></main>`);
     await page.locator("h1").evaluate((element, value) => { element.textContent = value; }, title);
-    await page.screenshot({ path: outputPath, type: "webp", quality: 78 });
+    const screenshot = await page.screenshot({ type: "png" });
+    await sharp(screenshot)
+      .resize(640, 360, { fit: "cover" })
+      .webp({ quality: 78 })
+      .toFile(outputPath);
   } finally {
     await page.close();
   }
