@@ -1,6 +1,6 @@
-# Offline HTML Game Packager
+# goarxyz Browser Games
 
-This repository builds browser-ready packages from the 300 single-file games in
+This repository powers the goarxyz browser-game library using 300 single-file games from
 [`CoolDude2349/Offline-HTML-Games-Pack`](https://github.com/CoolDude2349/Offline-HTML-Games-Pack).
 
 Each generated ZIP contains:
@@ -11,9 +11,8 @@ cover.webp
 metadata.json
 ```
 
-The workflow captures artwork from the running game itself, stores package ZIPs
-as public GitHub Release assets, and deploys `catalog.json` plus lightweight
-cover images through GitHub Pages.
+The workflow captures artwork from the running games, stores named packages in
+`main/games/`, and publishes the catalog experience through GitHub Pages.
 
 ## Published site and API
 
@@ -40,7 +39,7 @@ separate `workflow` OAuth scope. Activate the already validated template once:
 The build runs in 10 parallel shards. A successful run publishes:
 
 - Catalog: `https://goarxyz.github.io/offline-html-game-packager/catalog.json`
-- Covers: `https://goarxyz.github.io/offline-html-game-packager/covers/<game>.webp`
+- Artwork: `https://raw.githubusercontent.com/goarxyz/offline-html-game-packager/main/covers/<game>.webp`
 - Packages: URLs stored in each catalog entry's `packageUrl`
 
 ## Local smoke test
@@ -59,12 +58,11 @@ RELEASE_TAG=local-test node scripts/merge-catalog.mjs build site
 The consuming website should:
 
 1. Fetch `catalog.json`.
-2. Display each entry's `cover`.
+2. Display each entry's `coverUrl`.
 3. Download `packageUrl` only when the user chooses that game.
-4. Store the ZIP in IndexedDB.
-5. Read `filename` from `metadata.json` and extract that original HTML filename
-   with JSZip.
-6. Load the HTML using a Blob URL in the game iframe.
+4. Store the ZIP in the Cache API.
+5. Read `filename` from `metadata.json` and extract that original HTML filename.
+6. Publish the document to a temporary service-worker URL for the game iframe.
 
 Do not gzip files inside the ZIP. ZIP compression already handles the package,
 and double compression makes browser loading slower without a useful size win.
