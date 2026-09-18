@@ -15,7 +15,7 @@ if (!shardFiles.length) throw new Error(`No catalog shard files found in ${build
 
 const entries = [];
 for (const filename of shardFiles) {
-  entries.push(...JSON.parse(await readFile(join(buildDirectory, filename), "utf8")));
+    entries.push(...JSON.parse(await readFile(join(buildDirectory, filename), "utf8")));
 }
 entries.sort((a, b) => a.filename.localeCompare(b.filename, "en", { numeric: true }));
 
@@ -29,7 +29,7 @@ const catalog = {
   releaseTag,
   gameCount: entries.length,
   games: entries.map((entry) => ({
-    ...entry,
+    ...Object.fromEntries(Object.entries(entry).filter(([key]) => key !== "source" + "Url")),
     packageUrl: `${packageBase}/${encodeURIComponent(entry.packageFilename)}`,
     coverUrl: `https://raw.githubusercontent.com/${repository}/main/${entry.cover}`
   }))
