@@ -27,7 +27,6 @@ const packageBase = process.env.PACKAGE_BASE_URL ||
 const catalog = {
   generatedAt: new Date().toISOString(),
   releaseTag,
-  gameCount: entries.length,
   games: entries.map((entry) => ({
     ...Object.fromEntries(Object.entries(entry).filter(([key]) => key !== "source" + "Url")),
     category: categoryFor(entry.filename),
