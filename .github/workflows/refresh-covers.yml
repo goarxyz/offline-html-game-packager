@@ -30,6 +30,7 @@ jobs:
       SHARD_TOTAL: 10
       SOURCE_BRANCH: ${{ inputs.source_branch }}
       CONCURRENCY: 1
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
