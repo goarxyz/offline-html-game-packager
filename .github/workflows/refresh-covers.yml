@@ -8,6 +8,19 @@ on:
         required: true
         default: master
         type: string
+      source_owner:
+        description: Source account or organization
+        required: true
+        type: string
+      source_repo:
+        description: Source repository name
+        required: true
+        type: string
+      source_directory:
+        description: Source directory containing the game files
+        required: true
+        default: offline
+        type: string
 
 concurrency:
   group: refresh-game-artwork
@@ -29,6 +42,9 @@ jobs:
       SHARD: ${{ matrix.shard }}
       SHARD_TOTAL: 10
       SOURCE_BRANCH: ${{ inputs.source_branch }}
+      SOURCE_OWNER: ${{ inputs.source_owner }}
+      SOURCE_REPO: ${{ inputs.source_repo }}
+      SOURCE_DIRECTORY: ${{ inputs.source_directory }}
       CONCURRENCY: 1
       GITHUB_TOKEN: ${{ github.token }}
     steps:
