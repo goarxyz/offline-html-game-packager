@@ -21,12 +21,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Remove source URL from every package metadata file
-        run: node scripts/sanitize-packages.mjs games
-      - name: Commit sanitized packages
+      - name: Remove source URL from packages in small batches
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add games
-          git commit -m "Remove upstream URLs from package metadata"
-          git push origin HEAD:main
+          total=$(find games -maxdepth 1 -type f -name '*.zip' | wc -l)
+          batch_size=10
+          for ((start=0; start<total; start+=batch_size)); do
+            node scripts/sanitize-packages.mjs games "$start" "$batch_size"
+            git add games
+            if git diff --cached --quiet; then
+              continue
+            fi
+            git commit -m "Remove upstream URLs from package metadata (${start}-${start+batch_size})"
+            for attempt in 1 2 3; do
+              git push origin HEAD:main && break
+              if [ "$attempt" = 3 ]; then exit 1; fi
+              sleep 20
+            done
+          done
