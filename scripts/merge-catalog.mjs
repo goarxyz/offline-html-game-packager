@@ -22,14 +22,16 @@ entries.sort((a, b) => a.filename.localeCompare(b.filename, "en", { numeric: tru
 const unique = new Set(entries.map((entry) => entry.filename));
 if (unique.size !== entries.length) throw new Error("Duplicate games found while merging catalog shards");
 
-const releaseBase = `https://github.com/${repository}/releases/download/${releaseTag}`;
+const packageBase = process.env.PACKAGE_BASE_URL ||
+  `https://raw.githubusercontent.com/${repository}/main/games`;
 const catalog = {
   generatedAt: new Date().toISOString(),
   releaseTag,
   gameCount: entries.length,
   games: entries.map((entry) => ({
     ...entry,
-    packageUrl: `${releaseBase}/${encodeURIComponent(entry.packageFilename)}`
+    packageUrl: `${packageBase}/${encodeURIComponent(entry.packageFilename)}`,
+    coverUrl: `https://raw.githubusercontent.com/${repository}/main/${entry.cover}`
   }))
 };
 
